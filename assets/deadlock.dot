@@ -1,0 +1,13 @@
+digraph {
+    "Python gRPC client" -> "Go process";
+     "Go process" -> "Python gRPC client";
+    "Go process" -> "C buffer";
+    "C process" -> "Go channel buffer";
+    "Go channel buffer" -> "Go process";
+    "C buffer" -> "C process";
+    subgraph subs {
+        rank="same";
+        "Go channel buffer";
+        "C buffer";
+    }
+}
