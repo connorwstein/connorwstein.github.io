@@ -1,0 +1,45 @@
+digraph SkipList {
+graph [rankdir = "LR"];
+
+subgraph cluster0 {
+
+"Head" [
+label = "{ <f2> } | { <f1> } | <f0> Head"
+shape = "record"
+];
+
+"Head":f1:c -> "node1":f1:c [arrowhead=vee, arrowtail=dot, dir=both, tailclip=false];
+"Head":f2:c -> "node2":f2:c [arrowhead=vee, arrowtail=dot, dir=both, tailclip=false];
+
+"node1" [
+label = " { <f1> } | <f0> 4" // The | are special
+shape = "record"
+];
+"node1":f1:c -> "node2":f1 [arrowhead=vee, arrowtail=dot, dir=both, tailclip=false];
+
+"node2" [
+label = " { <f2> } | { <f1> } | <f0> 7"
+shape = "record"
+];
+"node2":f2:c -> "node4":f2 [arrowhead=vee, arrowtail=dot, dir=both, tailclip=false];
+"node2":f1:c -> "node3":f1 [arrowhead=vee, arrowtail=dot, dir=both, tailclip=false];
+
+"node3" [
+label = " { <f1> } | <f0> 20" // The | are special
+shape = "record"
+];
+"node3":f1:c -> "node4":f1 [arrowhead=vee, arrowtail=dot, dir=both, tailclip=false];
+
+"node4" [
+label = " { <f2> } | { <f1> } | <f0> 23"
+shape = "record"
+];
+"node4":f2:c -> "Null":f2 [arrowhead=vee, arrowtail=dot, dir=both, tailclip=false];
+"node4":f1:c -> "Null":f1 [arrowhead=vee, arrowtail=dot, dir=both, tailclip=false];
+
+"Null" [
+label = "{ <f2> } | { <f1> } | <f0> Null"
+shape = "record"
+];
+}
+}

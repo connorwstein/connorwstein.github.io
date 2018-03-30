@@ -3,4 +3,6 @@ layout: page
 title: About
 permalink: /about/
 ---
-I am a software engineer at Cisco Systems. My technical interests include network programming, distributed systems and containers.
+I am current a software developer at Cisco Systems.
+
+My interests related to software include distributed systems, algorithms, functional programming and blockchain technology. Outside of software, I am interested cognition and neuroscience, philosophy, mathematics and economics.
