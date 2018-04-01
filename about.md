@@ -5,4 +5,4 @@ permalink: /about/
 ---
 I am currently a software developer at Cisco Systems.
 
-My interests related to software include distributed systems, algorithms, functional programming and blockchain technology. Outside of software, I am interested cognition and neuroscience, philosophy, mathematics and economics.
+My interests related to software include distributed systems, algorithms, functional programming and blockchain technology. Outside of software, I am interested in music, cognition and neuroscience, philosophy, mathematics and economics.
