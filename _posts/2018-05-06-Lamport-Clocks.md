@@ -10,14 +10,14 @@ Basically the point of the paper is to show that a total ordering of events can 
 The paper begins with a lot of precise definitions which are critical to understanding the algorithms. He defines a -> b to be a "happened before" relation or a partial ordering which means that:
 
 * If a and b are events in the same process then a comes before b
-* a->b holds if a describes the sending of a message to process i and b describes the receiving of that message by process j
-* If a->b and b->c then a->c
+* a -> b holds if a describes the sending of a message to process i and b describes the receiving of that message by process j
+* If a -> b and b -> c then a -> c
 
 I knew this was going to be a badass paper as soon as he references relativity to describe how this definition is natural if you think of a->b as meaning a has the _potential_ to causally effect b:  "This definition will appear quite natural to the reader familiar with teh invariant space-time formulation of special relativity." How often do you see a relativity reference in a CS paper? Awesome.
 
 The next set of defintions involve systems of logical clocks. You can think of a logical clock as simply a counter in a process. If you increment the counter in between local process events (this is implementation rule 1 in the paper) AND update your clock to be >= the timestamp of a message received from another process (implementation rule 2), then comparing the count between two different events in that process will tell you which one "happened before." This is the essence of the clock condition and how to maintain it. Here's the cool part: if this clock condition is satisfied in your system of processes and logical clocks and you maintain a list of the events and what the clock was at when they occur, then you now have a total or global ordering of the events. Then resolving synchronization problems becomes much easier because based on the total ordering we know exactly what state every process is currently in. 
 
-The mutual exclusion problem he describes is a very realistic and practical one. Let's say you have a number of processes and there is a single shared resource which can only be used by one process at a time. Now imagine these processes can only communicate with one another, there is no centralized scheduler and there are no physical clocks involved. If you had physical clocks which were always perfectly synchronized then the problem would be trivial because you could just have a schedule where each process has an alloted time with which then can proceed. 
+The mutual exclusion problem he describes is a very realistic and practical one. Let's say you have a number of processes and there is a single shared resource which can only be used by one process at a time. Now imagine these processes can only communicate with one another, there is no centralized scheduler and there are no physical clocks involved. If you had physical clocks which were always perfectly synchronized then the problem would be trivial because you could just have a schedule where each process has an alloted time with which they can proceed. 
 
 The solution is to ensure that every process knows the total ordering of the resource request events, accomplished via maintaining the clock condition and broadcasting resource requests and releases like so (incrementing the logical clock between each event):
 
