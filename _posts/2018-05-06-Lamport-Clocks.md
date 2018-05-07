@@ -22,7 +22,7 @@ The mutual exclusion problem he describes is a very realistic and practical one.
 The solution is to ensure that every process knows the total ordering of the resource request events, accomplished via maintaining the clock condition and broadcasting resource requests and releases like so (incrementing the logical clock between each event):
 
 1. To request the resource, send a request message to everyone with the timestamp set to your logical clock value
-2. If you get a request message, store it in your request queue and send an ack
+2. If you get a request message, store it in your request queue and send an ack back to the sender
 3. When you are done with the resource, remove your request from your request queue and broadcast a release message to everyone else
 4. If you receive a release message, remove that request from your request queue
 5. You get the resource if when you look at the request queue and your request is the earliest request AND you see later requests from everyone else (this is where we make use of the total ordering)
