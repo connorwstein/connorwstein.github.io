@@ -6,10 +6,13 @@ title: RC comes to an end
 ###### What actually happened part 2
 Sept 23 - Oct 15
 - A lot of interviews - interviewed with 7 companies out of the 12 I applied to, reaching various stages of their processes. Some of the take home assignments took up a lot of time but were fun. Along with doing these came still more of the leetcode/algorithm design manual stuff. 
+
 Sept 23 - Nov 5
 - I worked on an Ethereum dapp ([decentralized hackerrank](https://github.com/connorwstein/decentralized_hackerrank)) and read some more of the [mastering ethereum book](https://github.com/ethereumbook/ethereumbook) and [effective go](https://golang.org/doc/effective_go.html).
+
 Sept 26 - Oct 11
 - I worked through the first 2 chapters of SICP, this was a lot more time consuming than I thought but also really valuable and has definitely changed the way I think about programming.
+
 General
 - Held a number of crypto study group sessions where we went over IPFS, Ouroboros, Plasma and zkSnarks.
 
