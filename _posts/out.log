@@ -1,0 +1,99 @@
+Process A is using resourceProcess B requesting resource
+
+Process B: [Message request at -1 from A to A, Message request at 0 from B to B]
+Process B Clock: 2
+Process C requesting resource
+Process C: [Message request at -1 from A to A, Message request at 0 from C to C]
+Process C Clock: 2
+Process B waiting for message
+Got message Message request at 1 from C to B
+Process B: [Message request at -1 from A to A, Message request at 0 from B to B, Message request at 1 from C to B]
+Process B Clock: 3
+Process C waiting for message
+Got message Message request at 1 from B to C
+Process C: [Message request at -1 from A to A, Message request at 0 from C to C, Message request at 1 from B to C]
+Process C Clock: 3
+Process A requesting resource
+Process A: [Message request at 2 from A to A]
+Process A Clock: 4
+Process C waiting for message
+Got message Message ack at 2 from B to C
+Process C: [Message request at -1 from A to A, Message request at 0 from C to C, Message request at 1 from B to C]
+Process C Clock: 4
+Process B waiting for message
+Got message Message ack at 2 from C to B
+Process B: [Message request at -1 from A to A, Message request at 0 from B to B, Message request at 1 from C to B]
+Process B Clock: 4
+Process A waiting for message
+Got message Message request at 0 from B to A
+Process A: [Message request at 2 from A to A, Message request at 0 from B to A]
+Process A Clock: 5
+Process C waiting for message
+Process B waiting for message
+Got message Message release at 1 from A to B
+Process B: [Message request at 0 from B to B, Message request at 1 from C to B]
+Process B Clock: 5
+Got message Message release at 0 from A to C
+Process C: [Message request at 0 from C to C, Message request at 1 from B to C]
+Process C Clock: 5
+Process A waiting for message
+Got message Message request at 0 from C to A
+Process A: [Message request at 2 from A to A, Message request at 0 from B to A, Message request at 0 from C to A]
+Process A Clock: 6
+Process B waiting for message
+Got message Message request at 3 from A to B
+Resource available for B
+Process B: [Message request at 0 from B to B, Message request at 1 from C to B, Message request at 3 from A to B]
+Process B Clock: 6
+Process C waiting for message
+Got message Message request at 2 from A to C
+Resource available for C
+Process C: [Message request at 0 from C to C, Message request at 1 from B to C, Message request at 2 from A to C]
+Process C Clock: 6
+Process A waiting for message
+Got message Message ack at 5 from B to A
+Process A: [Message request at 2 from A to A, Message request at 0 from B to A, Message request at 0 from C to A]
+Process A Clock: 7
+Process B is using resource
+Process C is using resource
+Process A waiting for message
+Got message Message ack at 5 from C to A
+Process A: [Message request at 2 from A to A, Message request at 0 from B to A, Message request at 0 from C to A]
+Process A Clock: 8
+Process B requesting resource
+Process B: [Message request at 1 from C to B, Message request at 3 from A to B, Message request at 8 from B to B]
+Process B Clock: 10
+Process A waiting for message
+Got message Message release at 6 from B to A
+Process A: [Message request at 2 from A to A, Message request at 0 from C to A]
+Process A Clock: 9Process C requesting resource
+Process C: [Message request at 1 from B to C, Message request at 2 from A to C, Message request at 8 from C to C]
+Process C Clock: 10
+
+Process B waiting for message
+Got message Message ack at 4 from A to B
+Process B: [Message request at 1 from C to B, Message request at 3 from A to B, Message request at 8 from B to B]
+Process B Clock: 11
+Process A waiting for message
+Got message Message release at 6 from C to A
+Process A: [Message request at 2 from A to A]
+Process A Clock: 10
+Process C waiting for message
+Got message Message ack at 5 from A to C
+Process C: [Message request at 1 from B to C, Message request at 2 from A to C, Message request at 8 from C to C]
+Process C Clock: 11
+Process B waiting for message
+Got message Message release at 7 from C to B
+ Process C waiting for messageProcess A waiting for message
+Got message Message request at 8 from B to A
+
+Process A: [Message request at 2 from A to A, Message request at 8 from B to A]
+Process A Clock: 11
+ Got message Message release at 7 from B to CProcess B: [Message request at 3 from A to B, Message request at 8 from B to B]
+
+Process C: [Message request at 2 from A to C, Message request at 8 from C to C]
+Process C Clock: 12
+Process B Clock: 12
+Ctrl-c pressed
+Resource usage:
+{'A': 1, 'C': 1, 'B': 1}

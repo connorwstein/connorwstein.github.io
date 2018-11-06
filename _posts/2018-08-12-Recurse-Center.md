@@ -1,6 +1,6 @@
 ---
 layout: post
-title: RC Curriculum 
+title: RC curriculum 
 ---
 
 I am about to start a session at the Recurse Center in NYC! My list of things to learn and do has vastly outpaced what I was able to accomplish in nights and weekends with a full time job and I was looking for a place to focus on exploring computer science in the absence of Outlook and meetings. In addition to fundamental computer science topics, I plan to take a look a closer look the technical developments in the blockchain space as well.

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: RC Mid-batch update 
+title: RC mid-batch update 
 ---
 
 ###### What actually happened
