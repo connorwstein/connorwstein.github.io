@@ -27,7 +27,6 @@ Pretty amazing that all these resources are free and readily available - the int
 
 Some stuff that didn’t make the cut:
 - Emulate a goroutine in C
-- Go package which provides a memory allocated
 - Psuedowire support in docker - point-to-point connections between containers
 - Chrome plugin to quantify your reading habits (topic focus, word counts, etc.)
 - Blockchain for distributed consensus on shared document edits
