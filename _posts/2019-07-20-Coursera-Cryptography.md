@@ -14,12 +14,25 @@ Those random bytes are used to periodically reseed the PRG which outputs /dev/ur
 
 **Nonce**
 
-A n(umber-used)once. A common use case and good way to think about this is to imagine someone obtains an encrypted transaction for spending money from someones account, without a nonce as part of the encrypted transaction, a user could continuously broadcast the transaction to drain the account. Strictly speaking, the nonce does not have to be random. It can be a pure incremental counter such as in counter mode block ciphers. However to prevent certain kinds of attacks it may be required to be random, such as when used as the IV for cipher block chaining mode block ciphers.
+A n(umber-used)once. 
+A common use case and good way to think about this is to imagine someone obtains an encrypted transaction for spending money from someones account, without a nonce as part of the encrypted transaction, a user could continuously broadcast the transaction to drain the account. 
+Strictly speaking, the nonce does not have to be random. 
+It can be a pure incremental counter such as in counter mode block ciphers. 
+However to prevent certain kinds of attacks it may be required to be random, such as when used as the IV for cipher block chaining mode block ciphers.
 
 **PRG**
 
-A pseudorandom number generator (PRG) is 
-It is secure if..
+A pseudorandom number generator (PRG) is a deterministic algorithm for generating a sequence of bits from a given seed which appear random. 
+It is secure if an adversary is unable to predict the next bit with any high degree of probability. More concretely there is no such algorithm $$ A $$ where: 
+
+$$ 
+\begin{align*}
+ Pr[A(PRG(k))|_{i..1} = PRG(k)|_{i+1}] > \frac{1}{2} + \epsilon 
+\end{align*}
+$$
+
+The $$ \frac{1}{2} $$ comes from the fact that its the next _bit_ an adversary is trying to predict. 
+$$ \epsilon $$ is a tunable parameter corresponding to the security of the system. Typically something on the order of $$ \begin{align*} \frac{1}{2^{80}} \end{align*} $$ to be considered negligible and thus secure.
 
 **PRF** 
 
