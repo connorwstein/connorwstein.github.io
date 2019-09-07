@@ -53,7 +53,7 @@ A psuedorandom permutation (PRP) is similar to a PRF except it has a few additio
 
 **Semantic security**
 
-Best exaplained with the diagram from the course:
+Best explained with the diagram from the course:
 {:refdef: style="text-align: center;"}
 ![image]({{ site.url }}/assets/coursera_semantic_security.png) 
 {: refdef}
@@ -73,10 +73,8 @@ The one caveat is we necessarily need to exclude asking for the decryption of th
 
 Authenticated encryption is when you have both semantic security against a CPA attack (confidentiality) and you have existential unforgeability under a chosen message attack (integrity).
 
+**Symmetric Ciphers** 
 
-
-
-### Stream Ciphers
 Symmetric ciphers use the same key to encrypt and decrypt. Given key space K, message space M and ciphertext space C, a symmetric cipher is defined as:
 
 $$
@@ -85,32 +83,42 @@ D: K\times C\rightarrow M\\
 \forall k \in K: D(E(k, m)) = m\\
 $$
 
-E often produces randomized ciphertext because if not adversaries often have ways of manipulating the ciphertext for attacks and/or learning something about the ciphertext. D must be deterministic,
-clearly the secret message we get should not change the more times we decrypt. 
+E often produces randomized ciphertext because if not adversaries often have ways of manipulating the ciphertext for attacks and/or learning something about the ciphertext. 
+D must be deterministic, clearly the secret message we get should not change the more times we decrypt. 
 
-The one time pad (OTP) is a famous simple kind of symmetric cipher where $$K, M, C \in [0,1]^{n}\$$ and $$E(k, m) = k \oplus m$$. A secure cipher is one where no information
-is given about the plain text (Shannon's definition). A cipher is "perfectly" secure if the probability of getting a specific ciphertext is equal for all input messages. This is equivalent 
-to learning nothing about the plaintext because the attacker fundamentally cannot know if the ciphertext came from m0 or m1 (for any pair of messages m0 and m1). The OTP has perfect secrecy
-as long as the keys are never reused and they are randomly generated. There is a theorem stating that for a cipher to be perfectly secure, the key length must be >= the message length.
 
-Why do xor's come into play in the first place? Xors are very fast operations on computers.
+### Stream Ciphers
+The simplest possible symmetic cipher is known as the one time pad (OTP):
 
-The idea of a stream cipher is to use a small truly random key to generate pseudo random keys. This security will be less than perfectly secure and will depend on how these pseudo-random keys are generated, i.e. the depend on the security of the pseudo-random generator. Its called a stream because the PRG generates a never ending stream of bits which we xor with messages as needed to encrypt them. Notably the stream output can only be used once, otherwise attackers can xor the two ciphertexts produced by a reused key together and obtain m0 xor m1 which can reveal info [link to pixel overlay example].
+Given a message $$ m \in [0,1]^{n} $$, a random key $$ k \in [0,1]^{n}$$:
 
-[ TODO elaborate more on the notion of pseudo randomness]
+$$ E(k, m) = k \oplus m = c $$
 
-A pseudo-random generator is a function which takes a small seed of bits and produces a much larger string of bits. The much larger string of bits is efficiently computable by a deterministic algorithm.It may appear that we could just make OTP practical by generating keys from this small seed of bits, but unfortunately the key is really just the seed of the PRG, which is smaller than the message size and thus violates our theorem that perfectly secure ciphers must have key lengths >= the message lengths. 
+$$ D(k, m) = k \oplus c = m $$
 
-If we can predict the output of the PRG after some observation, then we can predict the keys and thus decrypt subsequent messages. So the security of the stream cipher depends on the predictability of
-this PRG. We define the PRG as being predictible if given all the bits up to i you can predict the next bit with probability greater than one-half plus epsilson where epsilon is a tunable value and 
-in practice it needs to be < 1/2^80 to be considered secure. The 80 is often used as the security parameter lambda. 
+and we never re-use the key $$ k $$.
 
-Still more problems with stream ciphers though - the cipher text is malleable. We can take $$ c1 = G(k) \oplus m0 $$ and manipulate m0 via $$ c1 \oplus p = G(k) \oplus (m0 \oplus m1) $$. 
+The upsides of the OTP:
+- It has perfect secrecy - all ciphertexts have an equal probability of being generated - as long as the keys in fact randomly generated. 
+- XOR operations are very fast for computers
 
-Stream ciphers are semantically secure. [TODO elaborate]
+The downsides of the OTP:
+- We need to generate a new key every time we encrypt
+- The key must be as long as the message itself
+- The ciphertext is malleable. If I intercept the message $$ c $$ I can $$ c \oplus m_{connor} $$ and the decryptor will happily produce $$ m \oplus m_{connor} $$.
+ 
+Unfortunately, these downsides are just too large for the OTP to be practical. 
+Stream ciphers are able to overcome the first two downsides by using a much smaller random key to seed a PRG. 
+This PRG then generates a _stream_ of bits which we use to encrypt messages as we need to, never re-using the old stream outputs. 
+There is a theorem stating that for a cipher to be perfectly secure, the key length must be >= the message length, so stream ciphers cannot be perfectly secure. 
+They can be as secure as the pseudo-random generator used to generate the stream however, and they are semantically secure assuming the PRG is secure.
+Without a MAC, stream ciphers still suffer from the malleability problem. 
+From a practical standpoint, stream ciphers are hard to get right. 
+In particular the requirements of a truly random PRG seed and never re-using the key stream bits can often attacked.  
+TODO: quick summary of key re-use attacks and seeding problems. 
 
-#### Block Ciphers
-[Diagram of block ciphers]
+### Block Ciphers
+
 Block ciphers are fundamentally different than stream ciphers in that they operate on fixed length blocks of input data. They take a key, expand it into a bunch of pseudo-random keys and using those as inputs to a series of round functions. [Diagram].
 How do you encrypt something larger than a block? Depends on the mode of operation. There are a few but the most important ones are:
 - Counter mode
@@ -120,19 +128,13 @@ How do you encrypt something larger than a block? Depends on the mode of operati
 
 The IV is used to make each ciphertext block unique.
 
-#### Message Integrity
-#### Authenticated Encryption
-Security in general is defined in the context of a challenger and an adversary. The adversary starts by sending arbitrary messages m0 and m1 to the challenger. The challenger sends back the encrypted version of one of the messages. Using only probabilistic polynomial time algorithms, the probability with which the adversary can correctly identify which of the two messages was encrypted is known as the semantic security of the system. The security lies on a spectrum ranging from 1/2 being secure and 1 being totally insecure.
+### Message Integrity
 
-The adversary may have additional powers aside from simply sending two plaintext messages. For instance some powers we can give are:
-- Encrypt any number of adversary specified plaintexts (chosen plaintext)
-- Decrypt any number of adversary specified ciphertexts (chosen ciphertext) 
-    - A notable exception would be the decryption of the ciphertext in question for the distinguishability test as that would obviously defeat the purpose
+### Authenticated Encryption
 
+#### Diffie Helman Key Exchange
 
-##### Diffie Helman Key Exchange
-
-##### Number Theory 
+#### Number Theory 
 Euler's totient function $$\phi(n)$$ counts the number of positive integers up to n that are relatively prime with N. 
 If n itself is prime then the positive integers up to n which are relatively prime with n is all of them except n, 
 because gcd(n, n) = n, not 1. 
@@ -141,7 +143,5 @@ In the context of RSA, this comes up because the RSA modulus is N = pq and we ha
 keys such that ed = k 
 
 
-##### Public Key Encryption
-
-
+### Public Key Encryption
 
