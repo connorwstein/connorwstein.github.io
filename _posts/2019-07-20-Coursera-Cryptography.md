@@ -22,7 +22,7 @@ However to prevent certain kinds of attacks it may be required to be random, suc
 
 **PRG**
 
-A pseudorandom number generator (PRG) is a deterministic algorithm for generating a sequence of bits from a given seed which appear random. 
+A pseudorandom number generator (PRG) is an efficient deterministic algorithm for generating a sequence of bits from a given seed which appear random. 
 It is secure if an adversary is unable to predict the next bit with any high degree of probability. More concretely there is no such algorithm $$ A $$ where: 
 
 $$ 
@@ -36,20 +36,42 @@ $$ \epsilon $$ is a tunable parameter corresponding to the security of the syste
 
 **PRF** 
 
-A pseudorandom function (PRF) is 
-It is secure if given the set of all functions from X to Y, a secure PRF is indistinguishable from a randomly chosen function X to Y.
+$$ F: K \times X \rightarrow Y $$
+
+A pseudorandom function (PRF) is exactly like a PRG but instead of being a stream it has random access. 
+Similar to PRGs, for a PRF from set X to Y to be considered secure, the function needs to be indistinguishable from a randomly chosen function in that set.
+PRFs can be constructed from PRGs and we can use PRFs to build PRPs, which are used to build block ciphers, the dominant form of encryption used today.
 
 **PRP** 
 
+$$ E: K \times X \rightarrow X $$
+
+A psuedorandom permutation (PRP) is similar to a PRF except it has a few additional properties which make it a permutation:
+
+- $$ D: K \times X \rightarrow X $$ must exist which inverts $$ E $$
+- Inputs correspond to exactly one output 
+
+**Semantic security**
+
+Best exaplained with the diagram from the course:
+{:refdef: style="text-align: center;"}
+![image]({{ site.url }}/assets/coursera_semantic_security.png) 
+{: refdef}
+A system is said to be semantically secure if the adversary gives the challenger messages $$ m_0, m_1 $$ and is unable to determine with any non-negligible probability greater than $$ \frac{1}{2} $$  which message was encrypted. 
+Its a probabilistic way to determine whether the adversary has learned _anything_ about the ciphertext. 
+
 **CPA**
+
+If we give the adversary the power to ask for encryptions of arbitrary messages (chosen plaintext) they can learn enough about the encryption mechanism to be able to break semantic security.
 
 **CCA**
 
+If, in addition to the CPA powers, we give the adversary the power to ask for decryptions of chosen ciphertexts they can learn enough about the encryption mechanism to be able to break semantic security.
+The one caveat is we necessarily need to exclude asking for the decryption of the challenge texts.
+
 **Authenticated encryption**
 
- Authenticated encryption is when you have both semantic security against a CPA attack (confidentiality) and you have existential unforgeability under a chosen message attack (integrity)
-
-**Semantic security**
+Authenticated encryption is when you have both semantic security against a CPA attack (confidentiality) and you have existential unforgeability under a chosen message attack (integrity).
 
 
 
