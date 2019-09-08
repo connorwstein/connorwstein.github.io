@@ -21,6 +21,20 @@ Strictly speaking, the nonce does not have to be random.
 It can be a pure incremental counter such as in counter mode block ciphers. 
 However to prevent certain kinds of attacks it may be required to be random, such as when used as the IV for cipher block chaining mode block ciphers.
 
+**Symmetric Ciphers** 
+
+Symmetric ciphers use the same key to encrypt and decrypt. Given key space K, message space M and ciphertext space C, a symmetric cipher is defined as:
+
+$$ E: K\times M\rightarrow C $$
+
+$$ D: K\times C\rightarrow M $$
+
+$$ \forall k \in K: D(E(k, m)) = m $$
+
+E often produces randomized ciphertext because if it doesn't adversaries often have ways of manipulating the ciphertext for attacks and/or learning something about the ciphertext. 
+D must be deterministic, because we definitely do not want the decrypted plaintext to change with additional decryptions. 
+
+
 **PRG**
 
 A pseudorandom number generator (PRG) is an efficient deterministic algorithm for generating a sequence of bits from a given seed which appear random. 
@@ -70,22 +84,23 @@ If we give the adversary the power to ask for encryptions of arbitrary messages 
 If, in addition to the CPA powers, we give the adversary the power to ask for decryptions of chosen ciphertexts they can learn enough about the encryption mechanism to be able to break semantic security.
 The one caveat is we necessarily need to exclude asking for the decryption of the challenge texts.
 
+**MAC** 
+
+A message authentication code (MAC) or tag is designed to ensure both message integrity (message was not modified) and authenticity (message came from the right person). 
+They are different from cryptographic signatures in that MACs use a shared symmetric key which is required to run the verify function.
+Thus only the recipient can verify the MAC, a 3rd party cannot unless they are also given the symmetric key.
+
+It involves a pair of algorithms "sign" and "verify" $$ S, V $$ such that:
+
+$$ S(k, m) = t $$ 
+
+$$ V(k, m, t) = valid \| invalid $$
+
+It is considered secure if the attacker has the power to request for arbitrary messages to be signed and yet they are unable to produce an existential forgery: another valid MAC for one of the requested messages. 
+ 
 **Authenticated encryption**
 
 Authenticated encryption is when you have both semantic security against a CPA attack (confidentiality) and you have existential unforgeability under a chosen message attack (integrity).
-
-**Symmetric Ciphers** 
-
-Symmetric ciphers use the same key to encrypt and decrypt. Given key space K, message space M and ciphertext space C, a symmetric cipher is defined as:
-
-$$ E: K\times M\rightarrow C $$
-
-$$ D: K\times C\rightarrow M $$
-
-$$ \forall k \in K: D(E(k, m)) = m $$
-
-E often produces randomized ciphertext because if it doesn't adversaries often have ways of manipulating the ciphertext for attacks and/or learning something about the ciphertext. 
-D must be deterministic, because we definitely do not want the decrypted plaintext to change with additional decryptions. 
 
 
 ### Stream Ciphers
@@ -128,7 +143,7 @@ They take a key, expand it into a bunch of pseudo-random keys and using those as
 ![image]({{ site.url }}/assets/coursera_block_cipher.png) 
 {: refdef}
 
-The round functions define the block cipher and they are built from PRPs or PRFs. One way to build a block cipher from just a PRF ($$ F: K \times X \rightarrow X $$) is via a Fiestel network:
+The round functions $$ R(k_i, m_i) $$ define the block cipher and they are built from PRPs or PRFs. One way to build a block cipher from just a PRF ($$ F: K \times X \rightarrow X $$) is via a Fiestel network:
 
 {:refdef: style="text-align: center;"}
 ![image]({{ site.url }}/assets/coursera_fiestel.png) 
@@ -181,6 +196,7 @@ In CTR mode, rather than ensuring a random IV is used for the first block and th
 A big win with CTR mode is that blocks can be encrypted in parallel. Assuming that the underlying block cipher is secure, it doesn't matter that the input is biased by the deterministic counter.
 
 ### Message Integrity
+MACs are typically based on PRFs rather than PRPs because they need not be invertible.
 
 ### Authenticated Encryption
 
