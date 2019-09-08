@@ -77,11 +77,11 @@ Authenticated encryption is when you have both semantic security against a CPA a
 
 Symmetric ciphers use the same key to encrypt and decrypt. Given key space K, message space M and ciphertext space C, a symmetric cipher is defined as:
 
-$$
-E: K\times M\rightarrow C\\
-D: K\times C\rightarrow M\\
-\forall k \in K: D(E(k, m)) = m\\
-$$
+$$ E: K\times M\rightarrow C $$
+
+$$ D: K\times C\rightarrow M $$
+
+$$ \forall k \in K: D(E(k, m)) = m $$
 
 E often produces randomized ciphertext because if not adversaries often have ways of manipulating the ciphertext for attacks and/or learning something about the ciphertext. 
 D must be deterministic, clearly the secret message we get should not change the more times we decrypt. 
@@ -115,26 +115,49 @@ They can be as secure as the pseudo-random generator used to generate the stream
 Without a MAC, stream ciphers still suffer from the malleability problem. 
 From a practical standpoint, stream ciphers are hard to get right. 
 In particular the requirements of a truly random PRG seed and never re-using the key stream bits can often attacked.  
+
 TODO: quick summary of key re-use attacks and seeding problems. 
 
 ### Block Ciphers
 
-Block ciphers are fundamentally different than stream ciphers in that they operate on fixed length blocks of input data. They take a key, expand it into a bunch of pseudo-random keys and using those as inputs to a series of round functions. [Diagram].
-How do you encrypt something larger than a block? Depends on the mode of operation. There are a few but the most important ones are:
+Block ciphers are fundamentally different than stream ciphers in that they operate on fixed length blocks of input data. 
+They take a key, expand it into a bunch of pseudo-random keys and using those as inputs to a series of round functions.
+
+{:refdef: style="text-align: center;"}
+![image]({{ site.url }}/assets/coursera_block_cipher.png) 
+{: refdef}
+
+The round functions define the block cipher and they are built from PRPs or PRFs. One way to build a block cipher from just a PRF ($$ F: K \times X \rightarrow X $$) is via a Fiestel network:
+
+{:refdef: style="text-align: center;"}
+![image]({{ site.url }}/assets/coursera_fiestel.png) 
+{: refdef}
+
+Here the input is plaintext split into two halves $$ R_i, L_i $$. The left circuit is a single round of encryption and the right is a single round of decryption.
+When we plug the output of the encryption circuit $$ R_i = f_i(R_{i-1}) \oplus L_i, L_i = R_{i-1} $$  and into the decryption circuit we get a nice little cancellation: 
+
+$$ L_{i-1} = R_i \oplus f_i(L_{i-1}) = f_i(R_{i-1}) \oplus L_i \oplus  f_i(R_{i-1}) = L_{i-1} $$
+
+$$ R_{i-1} = L_i = R_{i-1} $$
+
+That cancellation is how Fiestel networks can avoid the invertibility requirement of a PRP. 
+ 
+To encrypt something larger than a block, we split up the plaintext into blocks and pad. There are a few ways to do this:
 - Counter mode
     - Each plaintext is simply xored with the output of a PRF(k, counter value) to produce ciphertext.  
 - Cipher block chaining
     - Ciphertext output of a block is xor'd with the plaintext of the next block before encrypting that block, thus at any given point the input to an encryption depends on all plaintext up to that point. The encryption itself uses a PRP.
 
+There are known attacks if the block cipher
 The IV is used to make each ciphertext block unique.
 
 ### Message Integrity
 
 ### Authenticated Encryption
 
-#### Diffie Helman Key Exchange
+### Diffie Helman Key Exchange
 
-#### Number Theory 
+### Number Theory 
 Euler's totient function $$\phi(n)$$ counts the number of positive integers up to n that are relatively prime with N. 
 If n itself is prime then the positive integers up to n which are relatively prime with n is all of them except n, 
 because gcd(n, n) = n, not 1. 
