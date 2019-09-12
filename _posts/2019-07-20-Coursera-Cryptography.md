@@ -150,19 +150,20 @@ The round functions $$ R(k_i, m_i) $$ define the block cipher and they are built
 {: refdef}
 
 Here the input is plaintext split into two halves $$ R_i, L_i $$. The left circuit above is a single round of encryption and the right one is a single round of decryption.
-When we plug the output of the encryption circuit $$ R_i = f_i(R_{i-1}) \oplus L_i, L_i = R_{i-1} $$  and into the decryption circuit we get a nice little cancellation: 
+When we plug the output of the encryption circuit $$ R_i = f_i(R_{i-1}) \oplus L_i, L_i = R_{i-1} $$  into the decryption circuit we get a nice little cancellation: 
 
 $$ L_{i-1} = R_i \oplus f_i(L_{i-1}) = f_i(R_{i-1}) \oplus L_i \oplus  f_i(R_{i-1}) = L_{i-1} $$
 
 $$ R_{i-1} = L_i = R_{i-1} $$
 
-That cancellation is how Fiestel networks can avoid the invertibility requirement of a PRP. 
-The data encryption standard (DES) uses a 16-round Fiestel network, where the PRF is a substitution-permutation network. 
+That cancellation is how Fiestel networks can avoid the invertibility requirement of a PRP and only use a PRF. 
+The data encryption standard (DES) was a standard block cipher scheme invented in the 70s and eventually broken around 2000.
+It uses a 16-round Fiestel network, where the PRF is a substitution-permutation network. 
 The substitution portion of the network (S-box) is simply a lookup table which provides cryptographic "confusion" - a term meaning each bit of ciphertext depends on multiple bits of the key. 
 The permutation portion of the network (P-box) is to provide cryptographic "diffusion" - a term meaning a change in a single bit of the input should have equal probability of changing any particular ciphertext bit. 
 In DES, the permutation portion of the network is just a fixed lookup table, so interestingly the security of DES rests on the design of the substitution lookup table.
 A poorly designed S-box is subject to differential cryptanalysis, a CPA attack where by observing changes in ciphertext corresponding to changes in plaintext you can reduce the scope of the key search.
-DES was ultimately broken due to the small key size of 56 bits.
+Turns out the S-box wasn't the main weakness that killed DES (though although some differential cryptanalysis attacks were possible), ultimately computers became strong enough to just brute force the relatively small 56-bit key.
 Its successor is the the advanced encryption standard (AES), which does not use a Fiestel network at all, just a pure substitution-permutation network based on the Rijndael S-box.
 
 #### Block Cipher Modes
@@ -196,13 +197,44 @@ In CTR mode, rather than ensuring a random IV is used for the first block and th
 A big win with CTR mode is that blocks can be encrypted in parallel. Assuming that the underlying block cipher is secure, it doesn't matter that the input is biased by the deterministic counter.
 
 ### Message Integrity
-MACs are typically based on PRFs rather than PRPs because they need not be invertible.
+Some different MAC schemes include: 
+- CBC-MAC
+- NMAC
+- PMAC
+- Carter-Wegman MAC
+- HMAC 
+
+#### CBC-MAC
+The chain block cipher MAC is the same as a block cipher in CBC mode (AES is often used), except we only use the last cipherblock as the MAC and we just use 0 as the IV. 
+The chaining ensures that any change to the plaintext causes the final cipher block to change. 
+The important thing to note is that CBC-MAC is only secure for key re-use if the message is the same fixed size every time.
+If the message length is variable the attacker can ask for two MACs, say $$ (m[0] || m[1], T), (m'[0] || m'[1], T') $$ then ask for the MAC of different message $$ m || (m'[0] \oplus T || m'[1]) $$.
+That crafted message will result in an existential forgery because the MAC will be $$ T' $$ again:
+
+{:refdef: style="text-align: center;"}
+![image]({{ site.url }}/assets/cbc_attack.png) 
+{: refdef}
+
+because the output of the second block is actually $$ T $$, so it cancels the $$ T $$ from $$ T \oplus m'[0] $$.
+
+One way to get around this is the encrypt-last block approach (ECBC-MAC), whereby encrypting the last block means that in the attack above, the output of the second block is no long $$ T $$ so we don't get the cancellation.
+
+#### NMAC
+#### PMAC
+#### Carter-Wegman MAC 
+#### HMAC
+
 
 ### Authenticated Encryption
 
-### Diffie Helman Key Exchange
+### Diffie Helman Key Exchange
+The diffie helman (DH) key exchange is a way to agree on a shared secret without ever explicitly sending the shared secret over the wire. 
 
-### Number Theory 
+### Public Key Encryption
+Ways to do public key encryption:
+- RSA
+- El-Gamal
+
 Euler's totient function $$\phi(n)$$ counts the number of positive integers up to n that are relatively prime with N. 
 If n itself is prime then the positive integers up to n which are relatively prime with n is all of them except n, 
 because gcd(n, n) = n, not 1. 
@@ -211,5 +243,13 @@ In the context of RSA, this comes up because the RSA modulus is N = pq and we ha
 keys such that ed = k 
 
 
-### Public Key Encryption
+### Topics for a second post:
+- Hash function design
+- Elliptic curve based cryptography
+- Lattice based cryptography
+- MPC
+- ZKPs
+- Some other stuff from https://crypto.stanford.edu/pbc/notes/crypto/
+- Stuff I've heard about on blockchain podcasts: VDFs, accumulators, on-chain randomness, TEEs etc.
+
 
