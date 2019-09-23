@@ -199,8 +199,6 @@ A big win with CTR mode is that blocks can be encrypted in parallel. Assuming th
 ### Message Integrity
 Some different MAC schemes include: 
 - CBC-MAC
-- NMAC
-- PMAC
 - Carter-Wegman MAC
 - HMAC 
 
@@ -219,11 +217,25 @@ because the output of the second block is actually $$ T $$, so it cancels the $$
 
 One way to get around this is the encrypt-last block approach (ECBC-MAC), whereby encrypting the last block means that in the attack above, the output of the second block is no long $$ T $$ so we don't get the cancellation.
 
-#### NMAC
-#### PMAC
-#### Carter-Wegman MAC 
-#### HMAC
+#### Carter-Wegman MAC
+One of the downsides of CBC-MAC is that its kind of slow. 
+Carter and Wegmen invented the concept of universal hashing and then used it to produce a MAC which runs exceptionally fast on modern machines in what is known as the Carter-Wegman style MAC.
 
+Most hash functions get their fast O(1) performance assuming that the distribution of inputs is equal.
+Consider the case of a string hash function which sums all the byte values of the string as 64-bit integers. 
+It would be extremely biased towards the small numbers in 64-bit space, degrading to O(n).  
+Universal hashing solves this problem by picking a hash function randomly from a family of hash functions where the family ensures that
+the probability of a collision with randomly chosen hash function $$ h $$ is $$ \frac{1}{m} $$ where $$ m $$ is the number of hash buckets.
+For instance, a universal family for hashing integers which they came up with is to pick a prime $$ p >= m $$: 
+
+$$ h_{a, b}(x) = ((a*x + b) \bmod p) \bmod m $$ 
+
+Ok so how could such a thing be used to produce our pair of MAC functions $$ S(k, m), V(k, m, t) $$? 
+
+
+
+
+#### HMAC
 
 ### Authenticated Encryption
 
