@@ -254,6 +254,14 @@ Notably we can't directly hash the key and message like $$ H(k || m) $$ because 
 To resolve this problem, HMAC is of the form $$ H(k_1 || H(k_2 || m)) $$.
 
 ### Authenticated Encryption
+Encryption gives us CPA security. 
+However, if the adversary is active can tamper with messages in flight, then they can perform a CCA attack to break semantic security. 
+To protect against CCA attacks given this more powerful adversary, we need to ensure two things:
+- Eavsdropping is prevented with CPA secure encryption
+- Ciphertext tampering is prevented with a unforgeable MAC  
+These two components give us authenticated encryption and they ensure that the system is CCA secure (the adversary has the ability to decrypt some chosen ciphertexts).
+When we combine encryption with a MAC, encrypt-then-MAC always provides authenticated encryption whereas MAC-then-encrypt may or may not provide it, but notably it does work if you are using a rand-CBC or rand-CTR mode block cipher for the encryption.
+A widely used authenticated encryption scheme is galois counter mode (GCM) which encrypts with a rand-CTR mode block cipher (often AES) and an incremental MAC called GMAC which can be computed in parallel.
 
 ### Diffie Helman Key Exchange
 The diffie helman (DH) key exchange is a way to agree on a shared secret without ever explicitly sending the shared secret over the wire. 
