@@ -198,9 +198,9 @@ A big win with CTR mode is that blocks can be encrypted in parallel. Assuming th
 
 ### Message Integrity
 Some different MAC schemes include: 
-- CBC-MAC
-- Carter-Wegman MAC
-- HMAC 
+- CBC-MAC (PRF-based)
+- Carter-Wegman MAC (randomized + a little PRF)
+- HMAC (collision resistance based)
 
 #### CBC-MAC
 The chain block cipher MAC is the same as a block cipher in CBC mode (AES is often used), except we only use the last cipherblock as the MAC and we just use 0 as the IV. 
@@ -244,6 +244,14 @@ The verification function $$ V $$ works by just recomputing $$ t $$ and ensuring
 Its clever because we use the fast universal hash on the large input and the slower PRF on a much smaller random nonce, yet Carter and Wegman were able to show that security still follows from truly random keys and a secure PRF.
 
 #### HMAC
+HMAC is short for hash MAC and its a plug and play MAC suitable for use with any cryptographic hash function. 
+It is widely used in IPSec, TLS and JWTs.
+At a high level, all we do is hash the message plus a key using a cryptographic hash function and that is the tag.
+To verify, assuming we get the hash from a trusted source, we then locally hash the received message plus the key and compare the locally computed one with the public read-only one.
+The whole security of hash-based MACs like HMAC rests on collision resistance. 
+Given $$ H(m_0) $$, if I can efficiently find $$ m_1 $$ such that $$ H(m_0) = H(m_1) $$, then I can just submit $$ H(m_1) $$ as a forged tag for $$ m_1 $$.
+Notably we can't directly hash the key and message like $$ H(k || m) $$ because then adversaries can produce a still valid MAC $$ H(k || m || m_{adversary}) $$ without actually knowning the secret key. 
+To resolve this problem, HMAC is of the form $$ H(k_1 || H(k_2 || m)) $$.
 
 ### Authenticated Encryption
 
