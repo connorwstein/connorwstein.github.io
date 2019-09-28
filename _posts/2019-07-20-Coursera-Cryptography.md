@@ -226,14 +226,22 @@ Consider the case of a string hash function which sums all the byte values of th
 It would be extremely biased towards the small numbers in 64-bit space, degrading to O(n).  
 Universal hashing solves this problem by picking a hash function randomly from a family of hash functions where the family ensures that
 the probability of a collision with randomly chosen hash function $$ h $$ is $$ \frac{1}{m} $$ where $$ m $$ is the number of hash buckets.
-For instance, a universal family for hashing integers which they came up with is to pick a prime $$ p >= m $$: 
+For instance, a universal family for hashing integers which they came up with is: 
 
 $$ h_{a, b}(x) = ((a*x + b) \bmod p) \bmod m $$ 
 
+where $$ p $$ is just some prime chosen such that $$ p >= m $$: 
+
 Ok so how could such a thing be used to produce our pair of MAC functions $$ S(k, m), V(k, m, t) $$? 
 
+The VMAC algorithm is a MAC algorithm that uses this style of MAC generation. Its construction is:
 
+$$ S((k1, k2), m) = UH_{k1}(m) + PRF_{k2}(r) = t $$
 
+where $$ UH $$ is one of these universal hash functions and $$ r $$ is a random nonce shared between sender and receiver. 
+By $$ UH_{k1} $$ we mean that a randomly key $$ k1 $$ is used to select the hash function from the hash function family.
+The verification function $$ V $$ works by just recomputing $$ t $$ and ensuring that it is the same as the $$ t $$ in question.
+Its clever because we use the fast universal hash on the large input and the slower PRF on a much smaller random nonce, yet Carter and Wegman were able to show that security still follows from truly random keys and a secure PRF.
 
 #### HMAC
 
