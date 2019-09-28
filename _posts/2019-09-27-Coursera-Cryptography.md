@@ -277,14 +277,25 @@ We know some [tricks to speed up discrete exponentiation](https://en.wikipedia.o
 So we can just pick a huge modulus, forcing this difference in computational complexity to come into play and thus computing $$ A = g^a \bmod p $$ fast but $$ a = log_g(A) \bmod p $$ so slow that modern computers couldn't do it even with centuries of time.
 
 ### Public Key Encryption
-Some ways to do public key encryption:
-- RSA
-- El-Gamal
+PK encryption systems rely on trapdoor functions - functions which are easy in one direction but extremely difficult to invert _unless_ you know the trapdoor or secret information.
+To use trapdoor functions to generate a PK system, we need three functions $$ G() = (pk, sk) $$ which randonly generates a key pair, $$ F(pk, m) = c $$ which encrypts the message m and $$ F^{-1}(sk, c) = m $$ which decrypts the message m.
+
+#### RSA
+The RSA (Rivest-Shamir-Adleman) cryptosystem is the most widely used PK system and it works as follows:  
+
+$$ G() $$ involves picking two random primes $$ p, q $$ such that $$ N = p*q $$ where N is known as the RSA modulus. 
+Then choose $$ e, d $$ such that $$ ed = 1 \bmod \phi(N) $$ and $$ pk = (N, e), sk = (N, d) $$.
+
+Encryption is simply $$ c = m^e \bmod N $$. 
 
 Euler's totient function $$\phi(n)$$ counts the number of positive integers up to n that are relatively prime with N. 
 If n itself is prime then the positive integers up to n which are relatively prime with n is all of them except n, 
 because gcd(n, n) = n, not 1. 
 It is a multiplicative function, so $$ \phi(pq) = \phi(p)\phi(q) $$. 
-In the context of RSA, this comes up because the RSA modulus is N = pq and we have to pick our
-keys such that ed = k 
+
+We pick this condition $$ ed = 1 \bmod \phi(N) $$, because of Euler's theorem $$ a^{\phi(N)} = 1 \bmod N $$, which permits decryption to be done as follows (all modulus N):
+
+
+$$ c^{d} = (m^e)^d = m^{ed} = m^{k\phi(N) + 1} = m^{k\phi(N)}m = 1^km = m $$
+
 
