@@ -264,10 +264,20 @@ When we combine encryption with a MAC, encrypt-then-MAC always provides authenti
 A widely used authenticated encryption scheme is galois counter mode (GCM) which encrypts with a rand-CTR mode block cipher (often AES) and an incremental MAC called GMAC which can be computed in parallel.
 
 ### Diffie Helman Key Exchange
-The diffie helman (DH) key exchange is a way to agree on a shared secret without ever explicitly sending the shared secret over the wire. 
+The diffie helman (DH) key exchange is a way to achieve the seemingly impossible feat of two parties agreeing on a shared secret over a public channel without ever explicitly sending the shared secret to each other.
+It pretty simple:
+1. Alice and Bob agree on a prime modulus p and generator g. Number theory tells us that since $$ p $$ prime, the generator $$ g $$ can produce all the integers $$ 1, 2, .. (p - 1) $$ by raising $$ g $$ to some power. 
+2. Alice picks a secret number $$ a $$ and Bob picks a secret number $$ b $$.
+3. Alice sends Bob $$ A = g^a \bmod p $$ and Bob sends Alice $$ B = g^b \bmod p $$. Since $$ g $$ is a generator of this group of integers modulo $$ p $$, $$ A $$ and $$ B $$ are both values in that group. 
+4. Alice computes $$ g^{ab} = B^a \bmod p $$ and Bob computes $$ g^{ab} = A^b \bmod p $$ and $$ g^{ab} \bmod p $$ becomes the secret. 
+
+Can't the attacker just compute $$ a = log_g(A) \bmod p $$ and $$ b = log_g(B) \bmod p $$? 
+Ultimately it depends on the size of the modulus. There's an assumption that computing the discrete logarithm computationally difficult and in particular much more difficult than discrete exponentiation. 
+We know some [tricks to speed up discrete exponentiation](https://en.wikipedia.org/wiki/Exponentiation_by_squaring) but so far no one has found such tricks for computing discrete logarithms.
+So we can just pick a huge modulus, forcing this difference in computational complexity to come into play and thus computing $$ A = g^a \bmod p $$ fast but $$ a = log_g(A) \bmod p $$ so slow that modern computers couldn't do it even with centuries of time.
 
 ### Public Key Encryption
-Ways to do public key encryption:
+Some ways to do public key encryption:
 - RSA
 - El-Gamal
 
@@ -277,15 +287,4 @@ because gcd(n, n) = n, not 1.
 It is a multiplicative function, so $$ \phi(pq) = \phi(p)\phi(q) $$. 
 In the context of RSA, this comes up because the RSA modulus is N = pq and we have to pick our
 keys such that ed = k 
-
-
-### Topics for a second post:
-- Hash function design
-- Elliptic curve based cryptography
-- Lattice based cryptography
-- MPC
-- ZKPs
-- Some other stuff from https://crypto.stanford.edu/pbc/notes/crypto/
-- Stuff I've heard about on blockchain podcasts: VDFs, accumulators, on-chain randomness, TEEs etc.
-
 
