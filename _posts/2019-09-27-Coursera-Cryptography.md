@@ -1,7 +1,9 @@
 ---
 layout: post
-title: Coursera's intro to cryptography cheatsheet
+title: Notes from Cryptography I
 ---
+[Cryptography I](https://www.coursera.org/learn/crypto) was one of the best classes I've taken on Coursera! 
+Below I've tried to distill the course content into the key concepts for future reference.
 
 ### Key Definitions
 **Pseudorandom**
@@ -47,7 +49,7 @@ $$
 
 The $$ \frac{1}{2} $$ comes from the fact that it's the next _bit_ an adversary is trying to predict. 
 $$ \epsilon $$ is a tunable parameter corresponding to the security of the system. 
-Typically something on the order of $$ \begin{align*} \frac{1}{2^{80}} \end{align*} $$ to be considered negligible and thus secure.
+Typically something on the order of $$ \begin{align*} \frac{1}{2^{80}} \end{align*} $$ is required to be considered negligible and thus secure.
 
 **PRF** 
 
@@ -130,9 +132,7 @@ There is a theorem stating that for a cipher to be perfectly secure, the key len
 They can be as secure as the pseudo-random generator used to generate the stream however, and they are semantically secure assuming the PRG is secure.
 Without a MAC, stream ciphers still suffer from the malleability problem. 
 From a practical standpoint, stream ciphers are hard to get right. 
-In particular the requirements of a truly random PRG seed and never re-using the key stream bits can often attacked.  
-
-TODO: quick summary of key re-use attacks and seeding problems. 
+In particular, the requirements of a truly random PRG seed and never re-using the key stream bits can often attacked.  
 
 ### Block Ciphers
 
@@ -163,7 +163,7 @@ The substitution portion of the network (S-box) is simply a lookup table which p
 The permutation portion of the network (P-box) is to provide cryptographic "diffusion" - a term meaning a change in a single bit of the input should have equal probability of changing any particular ciphertext bit. 
 In DES, the permutation portion of the network is just a fixed lookup table, so interestingly the security of DES rests on the design of the substitution lookup table.
 A poorly designed S-box is subject to differential cryptanalysis, a CPA attack where by observing changes in ciphertext corresponding to changes in plaintext you can reduce the scope of the key search.
-Turns out the S-box wasn't the main weakness that killed DES (though although some differential cryptanalysis attacks were possible), ultimately computers became strong enough to just brute force the relatively small 56-bit key.
+Turns out the S-box wasn't the main weakness that killed DES (although some differential cryptanalysis attacks were possible), ultimately computers became powerful enough to just brute force the relatively small 56-bit key.
 Its successor is the advanced encryption standard (AES), which does not use a Fiestel network at all, just a pure substitution-permutation network based on the Rijndael S-box.
 
 #### Block Cipher Modes
@@ -236,18 +236,18 @@ Ok so how could such a thing be used to produce our pair of MAC functions $$ S(k
 
 The VMAC algorithm is a MAC algorithm that uses this style of MAC generation. Its construction is:
 
-$$ S((k1, k2), m) = UH_{k1}(m) + PRF_{k2}(r) = t $$
+$$ S((k_1, k_2), m) = UH_{k_1}(m) + PRF_{k_2}(r) = t $$
 
 where $$ UH $$ is one of these universal hash functions and $$ r $$ is a random nonce shared between sender and receiver. 
-By $$ UH_{k1} $$ we mean that a randomly key $$ k1 $$ is used to select the hash function from the hash function family.
+By $$ UH_{k_1} $$ we mean that a randomly key $$ k_1 $$ is used to select the hash function from the hash function family.
 The verification function $$ V $$ works by just recomputing $$ t $$ and ensuring that it is the same as the $$ t $$ in question.
 Its clever because we use the fast universal hash on the large input and the slower PRF on a much smaller random nonce, yet Carter and Wegman were able to show that security still follows from truly random keys and a secure PRF.
 
 #### HMAC
 HMAC is short for hash MAC and it's a plug and play MAC suitable for use with any cryptographic hash function. 
 It is widely used in IPSec, TLS and JWTs.
-At a high level, all we do is hash the message plus a key using a cryptographic hash function and that is the tag.
-To verify, assuming we get the hash from a trusted source, we then locally hash the received message plus the key and compare the locally computed one with the public read-only one.
+At a high level, all we do is hash a message and key using a cryptographic hash function and that is the tag.
+To verify, assuming we get the hash from a trusted source, we then locally hash the received message and key and compare the locally computed one with the public read-only one.
 The whole security of hash-based MACs like HMAC rests on collision resistance. 
 Given $$ H(m_0) $$, if I can efficiently find $$ m_1 $$ such that $$ H(m_0) = H(m_1) $$, then I can just submit $$ H(m_1) $$ as a forged tag for $$ m_1 $$.
 Notably we can't directly hash the key and message like $$ H(k || m) $$ because then adversaries can produce a still valid MAC $$ H(k || m || m_{adversary}) $$ without actually knowing the secret key. 
@@ -255,11 +255,13 @@ To resolve this problem, HMAC is of the form $$ H(k_1 || H(k_2 || m)) $$.
 
 ### Authenticated Encryption
 Encryption gives us CPA security. 
-However, if the adversary is active can tamper with messages in flight, then they can perform a CCA attack to break semantic security. 
+However, if the adversary is active, he can tamper with messages in flight which can result in the system being _CCA_ insecure. 
 To protect against CCA attacks given this more powerful adversary, we need to ensure two things:
+
 - Eavesdropping is prevented with CPA secure encryption
 - Ciphertext tampering is prevented with an unforgeable MAC  
-These two components give us authenticated encryption and they ensure that the system is CCA secure (the adversary has the ability to decrypt some chosen ciphertexts).
+
+These two components give us authenticated encryption and they ensure that the system is secure in the face of an adversary who has the ability to decrypt some chosen ciphertexts.
 When we combine encryption with a MAC, encrypt-then-MAC always provides authenticated encryption whereas MAC-then-encrypt may or may not provide it, but notably it does work if you are using a rand-CBC or rand-CTR mode block cipher for the encryption.
 A widely used authenticated encryption scheme is galois counter mode (GCM) which encrypts with a rand-CTR mode block cipher (often AES) and an incremental MAC called GMAC which can be computed in parallel.
 
