@@ -31,7 +31,7 @@ $$ D: K\times C\rightarrow M $$
 
 $$ \forall k \in K: D(E(k, m)) = m $$
 
-E often produces randomized ciphertext because if it doesn't adversaries often have ways of manipulating the ciphertext for attacks and/or learning something about the ciphertext. 
+E often produces randomized ciphertext because if it doesn't, adversaries may have ways of manipulating the ciphertext for attacks and/or learning something about the ciphertext. 
 D must be deterministic, because we definitely do not want the decrypted plaintext to change with additional decryptions. 
 
 
