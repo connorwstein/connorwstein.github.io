@@ -285,19 +285,22 @@ To use trapdoor functions to generate a PK system, we need three functions $$ G(
 #### RSA
 The RSA (Rivest-Shamir-Adleman) cryptosystem is the most widely used PK system and it works as follows:  
 
-$$ G() $$ involves picking two random primes $$ p, q $$ such that $$ N = p*q $$ where N is known as the RSA modulus. 
+$$ G() $$ involves picking two random primes $$ p, q $$ such that $$ N = p*q $$ where $$ N $$ is known as the RSA modulus. 
 Then choose $$ e, d $$ such that $$ ed = 1 \bmod \phi(N) $$ and $$ pk = (N, e), sk = (N, d) $$.
 
 Encryption is simply $$ c = m^e \bmod N $$. 
 
-Euler's totient function $$\phi(n)$$ counts the number of positive integers up to n that are relatively prime with N. 
-If n itself is prime then the positive integers up to n which are relatively prime with n is all of them except n, 
-because gcd(n, n) = n, not 1. 
-It is a multiplicative function, so $$ \phi(pq) = \phi(p)\phi(q) $$. 
+Euler's totient function $$\phi(n)$$ counts the number of positive integers up to $$ n $$ that are relatively prime with $$ n $$. 
+If $$ n $$ itself is prime then the positive integers up to $$ n $$ which are relatively prime with $$ n $$ is all of them except $$ n $$, 
+because $$ gcd(n, n) = n $$, not 1. 
+So for prime n $$ \phi(n) = n - 1 $$.
+Notably $$\phi(pq) = \phi(p)\phi(q)$$, so if $$ p, q$$ are primes and $$ N = pq $$ like in RSA, we can easily compute $$phi(N) = (p-1)(p-1)$$ but only if we know the factorization of N. 
+The security rests on this "RSA problem": it's difficult to compute $$\phi(N)$$ without knowing the factorization and computing a prime factorization of large numbers is also difficult. 
 
-We pick this condition $$ ed = 1 \bmod \phi(N) $$, because of Euler's theorem $$ a^{\phi(N)} = 1 \bmod N $$, which permits decryption to be done as follows (all modulus N):
+Decryption proceeds as follows:
 
+$$ c^{d} \bmod N = (m^e)^d \bmod N = m^{ed} \bmod N = m^{k\phi(N) + 1} \bmod N = m^{k\phi(N)}m \bmod N $$ 
 
-$$ c^{d} = (m^e)^d = m^{ed} = m^{k\phi(N) + 1} = m^{k\phi(N)}m = 1^km = m $$
-
+Now we'll get deterministic decryption to $$ m $$ as long as $$ m^{k\phi(N)} = 1 \bmod N $$. 
+This is true by the chinese remainder theorem even when m is not relatively prime to N, which is possible because m could be a multiple of $$p$$ or $$q$$.
 
