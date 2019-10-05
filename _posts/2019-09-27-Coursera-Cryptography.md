@@ -267,7 +267,7 @@ A widely used authenticated encryption scheme is galois counter mode (GCM) which
 
 ### Diffie Hellman Key Exchange
 The diffie hellman (DH) key exchange is a way to achieve the seemingly impossible feat of two parties agreeing on a shared secret over a public channel without ever explicitly sending the shared secret to each other.
-It pretty simple:
+It's pretty simple:
 1. Alice and Bob agree on a prime modulus p and generator g. Number theory tells us that since $$ p $$ prime, the generator $$ g $$ can produce all the integers $$ 1, 2, .. (p - 1) $$ by raising $$ g $$ to some power. 
 2. Alice picks a secret number $$ a $$ and Bob picks a secret number $$ b $$.
 3. Alice sends Bob $$ A = g^a \bmod p $$ and Bob sends Alice $$ B = g^b \bmod p $$. Since $$ g $$ is a generator of this group of integers modulo $$ p $$, $$ A $$ and $$ B $$ are both values in that group. 
@@ -294,7 +294,7 @@ Euler's totient function $$\phi(n)$$ counts the number of positive integers up t
 If $$ n $$ itself is prime then the positive integers up to $$ n $$ which are relatively prime with $$ n $$ is all of them except $$ n $$, 
 because $$ gcd(n, n) = n $$, not 1. 
 So for prime n $$ \phi(n) = n - 1 $$.
-Notably $$\phi(pq) = \phi(p)\phi(q)$$, so if $$ p, q$$ are primes and $$ N = pq $$ like in RSA, we can easily compute $$phi(N) = (p-1)(p-1)$$ but only if we know the factorization of N. 
+Notably $$\phi(pq) = \phi(p)\phi(q)$$, so if $$ p, q$$ are primes and $$ N = pq $$ like in RSA, we can easily compute $$\phi(N) = (p-1)(p-1)$$ but only if we know the factorization of N. 
 The security rests on this "RSA problem": it's difficult to compute $$\phi(N)$$ without knowing the factorization and computing a prime factorization of large numbers is also difficult. 
 
 Decryption proceeds as follows:
