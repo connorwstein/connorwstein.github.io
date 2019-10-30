@@ -294,7 +294,7 @@ Euler's totient function $$\phi(n)$$ counts the number of positive integers up t
 If $$ n $$ itself is prime then the positive integers up to $$ n $$ which are relatively prime with $$ n $$ is all of them except $$ n $$, 
 because $$ gcd(n, n) = n $$, not 1. 
 So for prime n $$ \phi(n) = n - 1 $$.
-Notably $$\phi(pq) = \phi(p)\phi(q)$$, so if $$ p, q$$ are primes and $$ N = pq $$ like in RSA, we can easily compute $$\phi(N) = (p-1)(p-1)$$ but only if we know the factorization of N. 
+Notably $$\phi(pq) = \phi(p)\phi(q)$$, so if $$ p, q$$ are primes and $$ N = pq $$ like in RSA, we can easily compute $$\phi(N) = (p-1)(q-1)$$ but only if we know the factorization of N. 
 The security rests on this "RSA problem": it's difficult to compute $$\phi(N)$$ without knowing the factorization and computing a prime factorization of large numbers is also difficult. 
 
 Decryption proceeds as follows:
