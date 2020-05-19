@@ -181,8 +181,8 @@ t1 = Process("A", initially_granted_proc, list(procs - set("A")))
 t2 = Process("B", initially_granted_proc, list(procs - set("B")))
 t3 = Process("C", initially_granted_proc, list(procs - set("C")))
 
-# Daemonizing threads means that if main thread dies so do they. That way the process
-# will exit if the main thread is killed
+# Daemonizing threads means that if main thread dies, so do they. 
+# That way the process will exit if the main thread is killed.
 t1.setDaemon(True)
 t2.setDaemon(True)
 t3.setDaemon(True)
